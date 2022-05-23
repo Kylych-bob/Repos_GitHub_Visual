@@ -9,13 +9,20 @@ r = requests.get(url, headers=headers)
 response_dict = r.json()
 repo_dicts = response_dict['items']
 
-repo_names = []
+# repo_names = []
 stars = []
-labels = []                        # Подсказка
+labels = []             # Подсказка
+repo_links = []         # Активные ссылки
 
 for repo_dict in repo_dicts:
-    repo_names.append(repo_dict['name'])
+    # repo_names.append(repo_dict['name'])
     stars.append(repo_dict['stargazers_count'])
+
+    # Активные ссылки
+    repo_name = repo_dict['name']
+    repo_url = repo_dict['html_url']
+    repo_link = f'<a href="{repo_url}">{repo_name}</a>'
+    repo_links.append(repo_link)
 
     # Подсказка
     owner = repo_dict['owner']['login']
@@ -29,31 +36,34 @@ my_layout = {
     'titlefont': {'size': 28},
     'xaxis': {
         'title': 'Repository',
-        'titlefont': {'size': 24},  # Конкретный цвет столбцов
-        'tickfont': {'size': 14}    # Конкретный цвет столбцов
+        'titlefont': {'size': 24},      # Конкретный цвет столбцов
+        'tickfont': {'size': 24}        # Конкретный цвет столбцов
     },
     'yaxis': {
         'title': 'Stars',
-        'titlefont': {'size': 24},  # Конкретный цвет столбцов
-        'tickfont': {'size': 14}    # Конкретный цвет столбцов
+        'titlefont': {'size': 24},      # Конкретный цвет столбцов
+        'tickfont': {'size': 14}        # Конкретный цвет столбцов
     }
 }
 
 data = [{
     'type': 'bar',
-    'x': repo_names,
+    # 'x': repo_names,
+    'x': repo_links,
     'y': stars,
     'hovertext': labels,
-    'marker': {         # Конкретный цвет столбцов
+    'marker': {             # Конкретный цвет столбцов
         'color': 'rgb(60, 100, 150)',
-        'line': {'width': 1.5, 'color': 'rgb(25, 25, 25)'}
-    },
+        'line': {
+            'width': 1.5,
+            'color': 'rgb(25, 25, 25)'
+        }
+        },
     'opacity': 0.6
 }]
 
+
 fig = {'data': data, 'layout': my_layout}
 offline.plot(fig, filename='python_repos.html')
-
-
 
 
