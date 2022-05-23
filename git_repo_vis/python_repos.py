@@ -3,7 +3,12 @@ from plotly.graph_objs import Bar
 from plotly import offline
 
 # Создание вызова API и сохранение ответа.
-url = 'https://api.github.com/search/repositories?q=language:python&sort=stars'
+# Популярные проекты
+# url = 'https://api.github.com/search/repositories?q=language:python&sort=stars'
+
+# Популярные языка ПО
+url = 'https://api.github.com/search/repositories?q=language&sort=stars'
+
 headers = {'Accept': 'application/vnd.github.v3+json'}
 r = requests.get(url, headers=headers)
 # print(f'Status code: {r.status_code}')
@@ -14,15 +19,18 @@ r = requests.get(url, headers=headers)
 response_dict = r.json()
 repo_dicts = response_dict['items']
 repo_names = []
+language = []
 stars = []
 for repo_dict in repo_dicts:
     repo_names.append(repo_dict['name'])
+    language.append(repo_dict['language'])
     stars.append(repo_dict['stargazers_count'])
 
 # Построение визуализации.
 data = [{
     'type': 'bar',
-    'x': repo_names,
+    # 'x': repo_names,
+    'x': language,
     'y': stars
 }]
 
@@ -34,6 +42,10 @@ my_layout = {
 
 fig = {'data': data, 'layout': my_layout}
 offline.plot(fig, filename='python_repos.html')
+
+
+
+
 
 # print(f'\nKeys: {len(repo_dict)}')
 # for key in sorted(repo_dict.keys()):
